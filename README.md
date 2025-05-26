@@ -1,5 +1,3 @@
-# Amazon-reviews
-
 Multimodal E-commerce AI Advisor (Chainlit Frontend)
 This project is the Chainlit-based user interface for a multimodal conversational AI designed for e-commerce. It allows users to ask questions about products using text and by uploading product images. The frontend is built to interact with a sophisticated RAG (Retrieval-Augmented Generation) backend that processes both text and visual information from the Amazon Product Dataset 2020.
 
