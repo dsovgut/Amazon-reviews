@@ -51,3 +51,76 @@ source .venv/bin/activate
 # .venv\Scripts\activate
 # On Windows (Command Prompt):
 # .venv\Scripts\activate.bat
+
+Once activated, your terminal prompt should be prefixed with (.venv).
+
+3. Install Required Libraries:
+With the virtual environment active, install all the dependencies listed in requirements.txt:
+
+pip install -r requirements.txt
+
+4. Set Up Environment Variables (if applicable):
+
+If the project requires API keys or other configuration via environment variables:
+
+Create a file named .env in the root of the project directory.
+
+If a .env.example file is provided, copy its content into your .env file.
+
+Add the necessary values. For example:
+
+OPENAI_API_KEY=sk-your_actual_openai_api_key_here 
+# Add other RAG-backend related API keys or endpoints if needed
+
+5. Run the Chainlit Application (in VS Code Terminal or any system terminal):
+After completing the setup and ensuring your virtual environment is active, run the application using the following command in the terminal (from the project's root directory):
+
+chainlit run app/main.py -w --port 8012
+
+The -w (watch) flag enables auto-reload, so the application updates if you make changes to the Python code.
+
+--port 8012 specifies the port the application will run on. You can change this (e.g., to 8005, 8001, or any other available port) if 8012 is already in use.
+
+The application should then be accessible in your web browser at http://localhost:8012 (or the port you specified).
+
+Multimodal RAG Backend Integration Point
+For the teammate(s) responsible for the Multimodal RAG backend:
+
+The primary integration point for your RAG system is within the app/main.py script, specifically the asynchronous function:
+
+async def get_ecommerce_multimodal_rag_response(text_query: str, image_file_details: Optional[Dict], chat_history: Optional[List[Dict]]) -> Dict:
+
+This function is currently a placeholder and needs to be implemented with the actual logic of your multimodal RAG system.
+
+Inputs it receives from the frontend:
+
+text_query (str): The user's textual question.
+
+image_file_details (Optional[Dict]): A dictionary containing {"name": str, "path": str} if the user uploaded an image. Your RAG system will use the path to access the temporary image file for processing (e.g., with CLIP).
+
+chat_history (Optional[List[Dict]]): The conversation history, which might be useful for context.
+
+Your RAG implementation should:
+
+Process the text_query and the image (if image_file_details is provided) using models like CLIP.
+
+Perform retrieval from the vector database containing embeddings from the Amazon Product Dataset 2020 (both text and image embeddings).
+
+Augment the query/context with the retrieved information.
+
+Call the appropriate Large Language Model (e.g., Llama-3.1 or Mixtral) to generate a final, context-aware answer.
+
+Return a dictionary with the following structure:
+
+{
+    "text": "The textual response from the LLM.",
+    "image_url": "URL_of_a_relevant_product_image_or_None" 
+}
+
+The image_url should be a publicly accessible URL or a path that Chainlit can serve if your RAG system retrieves a relevant product image from the dataset.
+
+The main message handling logic (@cl.on_message) in app/main.py is already set up to:
+
+Detect image uploads from the user.
+
+Call `get_ecommerce_multimodal_rag_
